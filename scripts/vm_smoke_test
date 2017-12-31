@@ -1,7 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 #
 # This software is a part of ISAR.
 # Copyright (C) 2015-2018 ilbers GmbH
+#
+# bash required due to $LINENO, not supported by dash 0.5.10.2-5.
 
 VERBOSE=1
 TIMEOUT=300
