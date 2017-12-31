@@ -3,15 +3,17 @@
 # This software is a part of ISAR.
 # Copyright (C) 2015-2018 ilbers GmbH
 
-CONSOLE_OUTPUT=/tmp/isar_console
-PID_FILE=/tmp/qemu.pid
 VERBOSE=1
 TIMEOUT=300
+TMPDIR=tmp
+TESTDIR=$TMPDIR/test
+CONSOLE_OUTPUT=$TESTDIR/isar_console
+PID_FILE=$TESTDIR/qemu_pid
 
 # Error codes:
 ES_OK=0
 ES_FAIL=1
-ES_BUG=3
+ES_UNRESOLVED=3
 
 RET=$ES_OK
 
@@ -76,11 +78,11 @@ run_test () {
         check_example_module
 
         [ $VERBOSE -eq 1 -o $FAIL -eq 1 ] && dump_boot_log
-
-        rm $CONSOLE_OUTPUT
     fi
 
-    rm $PID_FILE
+    # Keep test artifacts
+    # - $CONSOLE_OUTPUT
+    # - $PID_FILE
 }
 
 show_help() {
@@ -138,12 +140,19 @@ do
         ;;
     *)
         echo "error: invalid parameter '$key', please try '--help' to get list of supported parameters"
-        exit $ES_BUG
+        exit $ES_UNRESOLVED
         ;;
     esac
 
     shift
 done
+
+if [ ! -d "$TMPDIR" ]; then
+    echo "$0: ERROR: `readlink -f $TMPDIR` doesn't exist" >&2
+    echo "$0 should be executed from Isar build directory" >&2
+    exit $ES_UNRESOLVED
+fi
+mkdir -p "$TESTDIR"
 
 # ARM machine
 run_test arm stretch
