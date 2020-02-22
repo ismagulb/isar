@@ -72,9 +72,10 @@ apt install \
   mtools \
   parted \
   python3 \
-  quilt \
   qemu \
+  qemu-system \
   qemu-user-static \
+  quilt \
   reprepro \
   sudo
 ```
